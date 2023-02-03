@@ -85,12 +85,17 @@ func main() {
 	issue := issues[0]
 
 	fmt.Println("添加 构建进展 Comment")
-	commentIssues(issue, cli, ctx, "[构建进展](https://github.com/"+config.GhUser+"/"+config.Repo+"/actions/runs/"+config.RunId+")")
+	err = commentIssues(issue, cli, ctx, "[构建进展](https://github.com/"+config.GhUser+"/"+config.Repo+"/actions/runs/"+config.RunId+")")
+	if err != nil {
+		fmt.Println("添加 构建进展 Comment 出错：", err.Error())
+		os.Exit(-1)
+	}
 	err, originImageName, targetImageName := mirrorByIssues(issue, config)
 	if err != nil {
 		commentErr := commentIssues(issue, cli, ctx, err.Error())
 		if commentErr != nil {
 			fmt.Println("提交 comment 报错", commentErr)
+			os.Exit(-1)
 		}
 	}
 
@@ -121,13 +126,24 @@ func main() {
 	fmt.Println("添加 转换结果 Comment")
 	res := buf.String()
 
-	commentIssues(issue, cli, ctx, strings.ReplaceAll(res, "^", "`"))
+	err = commentIssues(issue, cli, ctx, strings.ReplaceAll(res, "^", "`"))
+	if err != nil {
+		fmt.Println("添加 转换结果 Comment 出错：", err.Error())
+		os.Exit(-1)
+	}
 
 	fmt.Println("添加 转换结果 Label")
-	issuesAddLabels(issue, cli, ctx, result.Success)
-
+	err = issuesAddLabels(issue, cli, ctx, result.Success)
+	if err != nil {
+		fmt.Println("添加 转换结果 Label 出错：", err.Error())
+		os.Exit(-1)
+	}
 	fmt.Println("关闭 Issues")
-	issuesClose(issue, cli, ctx)
+	err = issuesClose(issue, cli, ctx)
+	if err != nil {
+		fmt.Println("关闭 Issues 出错：", err.Error())
+		os.Exit(-1)
+	}
 }
 
 var resultTpl = `
@@ -158,21 +174,23 @@ docker images | grep $(echo {{ .OriginImageName }} |awk -F':' '{print $1}')
 {{ end }}
 `
 
-func issuesClose(issues *github.Issue, cli *github.Client, ctx context.Context) {
+func issuesClose(issues *github.Issue, cli *github.Client, ctx context.Context) error {
 	names := strings.Split(*issues.RepositoryURL, "/")
 	state := "closed"
-	cli.Issues.Edit(ctx, names[len(names)-2], names[len(names)-1], issues.GetNumber(), &github.IssueRequest{
+	_, _, err := cli.Issues.Edit(ctx, names[len(names)-2], names[len(names)-1], issues.GetNumber(), &github.IssueRequest{
 		State: &state,
 	})
+	return err
 }
-func issuesAddLabels(issues *github.Issue, cli *github.Client, ctx context.Context, success bool) {
+func issuesAddLabels(issues *github.Issue, cli *github.Client, ctx context.Context, success bool) error {
 	names := strings.Split(*issues.RepositoryURL, "/")
 
 	label := "success"
 	if !success {
 		label = "failed"
 	}
-	cli.Issues.AddLabelsToIssue(ctx, names[len(names)-2], names[len(names)-1], issues.GetNumber(), []string{label})
+	_, _, err := cli.Issues.AddLabelsToIssue(ctx, names[len(names)-2], names[len(names)-1], issues.GetNumber(), []string{label})
+	return err
 }
 func commentIssues(issues *github.Issue, cli *github.Client, ctx context.Context, comment string) error {
 	names := strings.Split(*issues.RepositoryURL, "/")
