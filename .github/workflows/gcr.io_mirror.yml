@@ -24,7 +24,7 @@ jobs:
           cache: true
 
       - name: 运行 go 代码
-        run: go run main.go --github.token=${{ secrets.ACCESS_TOKEN }} --github.user=${{ github.repository_owner }} --github.repo=${{ github.event.repository.name }} --docker.registry=${{ secrets.DOCKER_REGISTRY }} --docker.namespace=${{ secrets.DOCKER_NAMESPACE }} --docker.user=${{ secrets.DOCKER_USER }} --docker.secret=${{ secrets.DOCKER_PASSWORD }} --github.run_id=${{ github.run_id }}
+        run: go run main.go --github.token=${{ secrets.GITHUB_TOKEN }} --github.user=${{ github.repository_owner }} --github.repo=${{ github.event.repository.name }} --docker.registry=${{ secrets.DOCKER_REGISTRY }} --docker.namespace=${{ secrets.DOCKER_NAMESPACE }} --docker.user=${{ secrets.DOCKER_USER }} --docker.secret=${{ secrets.DOCKER_PASSWORD }} --github.run_id=${{ github.run_id }}
 
   auto_close_issues:
     runs-on: ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
         id: check_issues
         uses: actions/github-script@v3.1.0
         with:
-          github-token: ${{secrets.ACCESS_TOKEN}}
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: | 
             const openIssues = await github.issues.listForRepo({
                   owner: '${{ github.repository_owner }}',
