@@ -20,23 +20,23 @@ Syntax/语法
 gcr.io/namespace/{image}:{tag}
  
 # eq / 等同于
-anjia0532/namespace.{image}:{tag}
+xwls/namespace.{image}:{tag}
 
 # special / 特别的
-k8s.gcr.io/{image}:{tag} <==> gcr.io/google-containers/{image}:{tag} <==> anjia0532/google-containers.{image}:{tag}
+k8s.gcr.io/{image}:{tag} <==> gcr.io/google-containers/{image}:{tag} <==> xwls/google-containers.{image}:{tag}
 
-wget https://raw.githubusercontent.com/anjia0532/gcr.io_mirror/master/pull-k8s-image.sh
+wget https://raw.githubusercontent.com/xwls/gcr.io_mirror/master/pull-k8s-image.sh
 chmod +x pull-k8s-image.sh
 
 ./pull-k8s-image.sh k8s.gcr.io/federation-controller-manager-arm64:v1.3.1-beta.1
 # 执行如下操作
-# docker pull anjia0532/google-containers.federation-controller-manager-arm64:v1.3.1-beta.1
-# docker tag anjia0532/google-containers.federation-controller-manager-arm64:v1.3.1-beta.1 k8s.gcr.io/federation-controller-manager-arm64:v1.3.1-beta.1
+# docker pull xwls/google-containers.federation-controller-manager-arm64:v1.3.1-beta.1
+# docker tag xwls/google-containers.federation-controller-manager-arm64:v1.3.1-beta.1 k8s.gcr.io/federation-controller-manager-arm64:v1.3.1-beta.1
 ```
 
 Uses/如何拉取新镜像
 -------
-[创建issues(直接套用模板即可，别自己瞎改labels)](https://github.com/anjia0532/gcr.io_mirror/issues/new?assignees=&labels=porter&template=porter.md&title=%5BPORTER%5D) ,将自动触发 github actions 进行拉取转推到docker hub
+[创建issues(直接套用模板即可，别自己瞎改labels)](https://github.com/xwls/gcr.io_mirror/issues/new?assignees=&labels=porter&template=porter.md&title=%5BPORTER%5D) ,将自动触发 github actions 进行拉取转推到docker hub
 
 **注意：**
 
@@ -48,7 +48,7 @@ Uses/如何拉取新镜像
 
 issues的内容无所谓，可以为空
 
-可以参考 [已搬运镜像集锦](https://github.com/anjia0532/gcr.io_mirror/issues?q=is%3Aissue+label%3Aporter+)
+可以参考 [已搬运镜像集锦](https://github.com/xwls/gcr.io_mirror/issues?q=is%3Aissue+label%3Aporter+)
 
 **注意:**
 
@@ -58,15 +58,15 @@ issues的内容无所谓，可以为空
 Fork/分叉代码自行维护
 -------
 
-- 必须: <https://github.com/anjia0532/gcr.io_mirror/fork> 点击连接在自己账号下分叉出 `gcr.io_mirror` 项目
+- 必须: <https://github.com/xwls/gcr.io_mirror/fork> 点击连接在自己账号下分叉出 `gcr.io_mirror` 项目
 - 可选: 修改 [./rules.yaml](./rules.yaml) 增加暂未支持的镜像库
 - 在 [./settings/secrets/actions](../../settings/secrets/actions) 创建自己的参数
 
 `DOCKER_REGISTRY`: 如果推到 docker hub 为空即可
 
-`DOCKER_NAMESPACE`: 如果推到 docker hub ，则是自己的 docker hub 账号(不带@email部分)，例如我的 anjia0532
+`DOCKER_NAMESPACE`: 如果推到 docker hub ，则是自己的 docker hub 账号(不带@email部分)，例如我的 xwls
 
-`DOCKER_USER`: 如果推到 docker hub,则是 docker hub 账号(不带@email部分)，例如我的 anjia0532
+`DOCKER_USER`: 如果推到 docker hub,则是 docker hub 账号(不带@email部分)，例如我的 xwls
 
 `DOCKER_PASSWORD`: 如果推到 docker hub，则是 docker hub 密码
 
@@ -93,12 +93,12 @@ https://gcr.io/v2/${namespace}/${image}/tags/list
 https://console.cloud.google.com/gcr/images/${namespace}/global/${image}
 
 # docker hub
-# e.g. https://registry.hub.docker.com/v1/repositories/anjia0532/google-containers.sig-storage.nfs-subdir-external-provisioner/tags
+# e.g. https://registry.hub.docker.com/v1/repositories/xwls/google-containers.sig-storage.nfs-subdir-external-provisioner/tags
 https://registry.hub.docker.com/v1/repositories/${namespace}/${image}/tags
 
 ```
 
-ReTag anjia0532 images to gcr.io/ 将加速下载的镜像重命名为gcr.io
+ReTag xwls images to gcr.io/ 将加速下载的镜像重命名为gcr.io
 -------
 
 ### 批量拉取并转换镜像
@@ -119,8 +119,8 @@ cat batch-pull-k8s-image.sh
 #!/bin/sh
 
 # 替换 gcr.io/google-containers/federation-controller-manager-arm64:v1.3.1-beta.1 为真实 image
-# 将会把 gcr.io/google-containers/federation-controller-manager-arm64:v1.3.1-beta.1 转换为 anjia0532/google-containers.federation-controller-manager-arm64:v1.3.1-beta.1 并且会拉取他
-# k8s.gcr.io/{image}/{tag} <==> gcr.io/google-containers/{image}/{tag} <==> anjia0532/google-containers.{image}/{tag}
+# 将会把 gcr.io/google-containers/federation-controller-manager-arm64:v1.3.1-beta.1 转换为 xwls/google-containers.federation-controller-manager-arm64:v1.3.1-beta.1 并且会拉取他
+# k8s.gcr.io/{image}/{tag} <==> gcr.io/google-containers/{image}/{tag} <==> xwls/google-containers.{image}/{tag}
 
 images=$(cat img.txt)
 
@@ -133,16 +133,16 @@ images=$(cat img.txt)
 #)
 
 eval $(echo ${images}|
-        sed 's/k8s\.gcr\.io/anjia0532\/google-containers/g;s/gcr\.io/anjia0532/g;s/\//\./g;s/ /\n/g;s/anjia0532\./anjia0532\//g' |
+        sed 's/k8s\.gcr\.io/xwls\/google-containers/g;s/gcr\.io/xwls/g;s/\//\./g;s/ /\n/g;s/xwls\./xwls\//g' |
         uniq |
         awk '{print "sudo docker pull "$1";"}'
        )
 
-# 下面这段代码将把本地所有的 anjia0532 镜像 (例如 anjia0532/google-containers.federation-controller-manager-arm64:v1.3.1-beta.1 )
+# 下面这段代码将把本地所有的 xwls 镜像 (例如 xwls/google-containers.federation-controller-manager-arm64:v1.3.1-beta.1 )
 # 转换成 grc.io 或者 k8s.gcr.io 的镜像 (例如 gcr.io/google-containers/federation-controller-manager-arm64:v1.3.1-beta.1)
-# k8s.gcr.io/{image}/{tag} <==> gcr.io/google-containers/{image}/{tag} <==> anjia0532/google-containers.{image}/{tag}
+# k8s.gcr.io/{image}/{tag} <==> gcr.io/google-containers/{image}/{tag} <==> xwls/google-containers.{image}/{tag}
 
-for img in $(sudo docker images --format "{{.Repository}}:{{.Tag}}"| grep "anjia0532"); do
+for img in $(sudo docker images --format "{{.Repository}}:{{.Tag}}"| grep "xwls"); do
   n=$(echo ${img}| awk -F'[/.:]' '{printf "gcr.io/%s",$2}')
   image=$(echo ${img}| awk -F'[/.:]' '{printf "/%s",$3}')
   tag=$(echo ${img}| awk -F'[:]' '{printf ":%s",$2}')
@@ -163,7 +163,7 @@ cat pull-k8s-images.sh
 
 k8s_img=$1
 mirror_img=$(echo ${k8s_img}|
-        sed 's/k8s\.gcr\.io/anjia0532\/google-containers/g;s/gcr\.io/anjia0532/g;s/\//\./g;s/ /\n/g;s/anjia0532\./anjia0532\//g' |
+        sed 's/k8s\.gcr\.io/xwls\/google-containers/g;s/gcr\.io/xwls/g;s/\//\./g;s/ /\n/g;s/xwls\./xwls\//g' |
         uniq)
 
 sudo docker pull ${mirror_img}
