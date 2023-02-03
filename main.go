@@ -194,7 +194,12 @@ func issuesAddLabels(issues *github.Issue, cli *github.Client, ctx context.Conte
 }
 func commentIssues(issues *github.Issue, cli *github.Client, ctx context.Context, comment string) error {
 	names := strings.Split(*issues.RepositoryURL, "/")
-	_, _, err := cli.Issues.CreateComment(ctx, names[len(names)-2], names[len(names)-1], issues.GetNumber(), &github.IssueComment{
+	fmt.Println("names:", names)
+	owner := names[len(names)-2]
+	fmt.Println("owner:", owner)
+	repo := names[len(names)-1]
+	fmt.Println("repo:", repo)
+	_, _, err := cli.Issues.CreateComment(ctx, owner, repo, issues.GetNumber(), &github.IssueComment{
 		Body: &comment,
 	})
 	return err
