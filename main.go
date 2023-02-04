@@ -160,12 +160,18 @@ docker login -u{{ .RegistryUser }} {{ .Registry }}
 {{ .TargetImageName }}
 
 
-#下载并重命名镜像
+#下载并重命名镜像 docker
 docker pull {{ .TargetImageName }}
 
 docker tag  {{ .TargetImageName }} {{ .OriginImageName }}
 
 docker images | grep $(echo {{ .OriginImageName }} |awk -F':' '{print $1}')
+
+#下载并重命名镜像 ctr
+
+ctr -n k8s.io i pull -k registry.cn-hangzhou.aliyuncs.com/xwls-gcr/google-containers.sig-storage.csi-provisioner:v3.3.0
+
+ctr -n k8s.io i tag registry.cn-hangzhou.aliyuncs.com/xwls-gcr/google-containers.sig-storage.csi-provisioner:v3.3.0 registry.k8s.io/sig-storage/csi-provisioner:v3.3.0
 
 ^^^
 {{ else }}
