@@ -163,7 +163,7 @@ docker login -u{{ .RegistryUser }} {{ .Registry }}
 #下载并重命名镜像 docker
 docker pull {{ .TargetImageName }}
 
-docker tag  {{ .TargetImageName }} {{ .OriginImageName }}
+docker tag {{ .TargetImageName }} {{ .OriginImageName }}
 
 docker images | grep $(echo {{ .OriginImageName }} |awk -F':' '{print $1}')
 
