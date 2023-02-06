@@ -15,7 +15,7 @@ assignees: ''
 
 issues的内容无所谓，可以为空
 
-可以参考 [已搬运镜像集锦](https://github.com/anjia0532/gcr.io_mirror/issues?q=is%3Aissue+label%3Aporter+)
+可以参考 [已搬运镜像集锦](https://github.com/xwls/gcr.io_mirror/issues?q=is%3Aissue+label%3Aporter+)
 
 **注意:**
 

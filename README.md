@@ -1,6 +1,26 @@
 Google Container Registry Mirror(Google Container Registry镜像加速)
 -------
 
+Uses/如何拉取新镜像
+-------
+[创建issues(直接套用模板即可，别自己瞎改labels)](https://github.com/xwls/gcr.io_mirror/issues/new?assignees=&labels=porter&template=porter.md&title=%5BPORTER%5D) ,将自动触发 github actions 进行拉取转推到docker hub
+
+**注意：**
+
+**为了防止被滥用，目前仅仅支持一次同步一个镜像**
+
+**Issues 必须带 `porter` label，** 简单来说就是通过模板创建就没问题，别抖机灵自己瞎弄。
+
+**标题必须为 `[PORTER]镜像名:tag` 的格式，** 例如`[PORTER]k8s.gcr.io/federation-controller-manager-arm64:v1.3.1-beta.1`,`[PORTER]gcr.io/google-containers/federation-controller-manager-arm64:v1.3.1-beta.1`
+
+issues的内容无所谓，可以为空
+
+可以参考 [已搬运镜像集锦](https://github.com/xwls/gcr.io_mirror/issues?q=is%3Aissue+label%3Aporter+)
+
+**注意:**
+
+本项目目前仅支持 `gcr.io` , `k8s.gcr.io` , `registry.k8s.io` , `quay.io`, `ghcr.io` 镜像，其余镜像源可以提 Issues 反馈或者自己 Fork 一份，修改 `rules.yaml`
+
 Disclaimer/免责声明
 -------
 本人郑重承诺
@@ -33,27 +53,6 @@ chmod +x pull-k8s-image.sh
 # docker pull xwls/google-containers.federation-controller-manager-arm64:v1.3.1-beta.1
 # docker tag xwls/google-containers.federation-controller-manager-arm64:v1.3.1-beta.1 k8s.gcr.io/federation-controller-manager-arm64:v1.3.1-beta.1
 ```
-
-Uses/如何拉取新镜像
--------
-[创建issues(直接套用模板即可，别自己瞎改labels)](https://github.com/xwls/gcr.io_mirror/issues/new?assignees=&labels=porter&template=porter.md&title=%5BPORTER%5D) ,将自动触发 github actions 进行拉取转推到docker hub
-
-**注意：**
-
-**为了防止被滥用，目前仅仅支持一次同步一个镜像**
-
-**Issues 必须带 `porter` label，** 简单来说就是通过模板创建就没问题，别抖机灵自己瞎弄。
-
-**标题必须为 `[PORTER]镜像名:tag` 的格式，** 例如`[PORTER]k8s.gcr.io/federation-controller-manager-arm64:v1.3.1-beta.1`,`[PORTER]gcr.io/google-containers/federation-controller-manager-arm64:v1.3.1-beta.1`
-
-issues的内容无所谓，可以为空
-
-可以参考 [已搬运镜像集锦](https://github.com/xwls/gcr.io_mirror/issues?q=is%3Aissue+label%3Aporter+)
-
-**注意:**
-
-本项目目前仅支持 `gcr.io` , `k8s.gcr.io` , `registry.k8s.io` , `quay.io`, `ghcr.io` 镜像，其余镜像源可以提 Issues 反馈或者自己 Fork 一份，修改 `rules.yaml`
-
 
 Fork/分叉代码自行维护
 -------
